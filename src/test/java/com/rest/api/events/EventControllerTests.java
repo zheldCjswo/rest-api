@@ -2,6 +2,7 @@ package com.rest.api.events;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rest.api.common.TestDescription;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -110,6 +111,7 @@ public class EventControllerTests {
     }
 
     @Test
+    @TestDescription("입력값 테스트")
     public void cretesEvent_Bad_Reqeust_Wrong_Input() throws Exception {
 
         Event event = Event.builder()
@@ -134,7 +136,5 @@ public class EventControllerTests {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-
     }
-
 }
