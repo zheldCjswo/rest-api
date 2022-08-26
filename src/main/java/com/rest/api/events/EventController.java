@@ -32,12 +32,12 @@ public class EventController {
     @PostMapping
     public ResponseEntity createEvent(@RequestBody EventDto eventDto,  Errors errors){
         if(errors.hasErrors()){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors); //errors를 json으로 변경 불가함
         }
 
         eventValidator.validate(eventDto, errors);
         if(errors.hasErrors()){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
 
         Event event = modelMapper.map(eventDto, Event.class);
