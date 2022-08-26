@@ -1,20 +1,17 @@
 package com.rest.api.events;
 
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 
-public class EventResource extends ResourceSupport {
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-    private Event event;
+public class EventResource extends EntityModel<Event> {
 
-    public EventResource(Event event){
-        this.event = event;
+    public EventResource(Event event, Link... links) {
+        super(event, links);
+        add(linkTo(EventController.class).slash(event.getId()).withSelfRel());
     }
-
-    public Event getEvent() {
-        return event;
-    }
-
 
 
 
