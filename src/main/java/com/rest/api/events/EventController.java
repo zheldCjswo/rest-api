@@ -1,6 +1,7 @@
 package com.rest.api.events;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.MediaTypes;
@@ -23,11 +24,13 @@ public class EventController {
 
     private final ModelMapper modelMapper;
 
+    private final EventRepository eventRepository;
+
     @PostMapping
     public ResponseEntity createEvent(@RequestBody EventDto eventDto){
         Event event = modelMapper.map(eventDto, Event.class);
-        URI cratedUri = linkTo(EventController.class).slash("{id}").toUri();
-        event.setId(10);
+        Event newEvent = this.eventRepository.save(event);
+        URI cratedUri = linkTo(EventController.class).slash(newEvent.getId()).toUri();
         return (ResponseEntity) ResponseEntity.created(cratedUri).body(event);
     }
 }
