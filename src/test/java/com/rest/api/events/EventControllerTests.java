@@ -54,7 +54,7 @@ public class EventControllerTests {
                 .build();
 
         mockMvc.perform(post("/api/events/")
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON.toString())
                         .accept(MediaTypes.HAL_JSON)
                         .content(objectMapper.writeValueAsString(event))
                 )
@@ -62,10 +62,14 @@ public class EventControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString()))
                 .andExpect(jsonPath("id").value(Matchers.not(100)))
                 .andExpect(jsonPath("free").value(Matchers.not(true)))
-                .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT));
+                .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT))
+                .andExpect(jsonPath("_link.self").exists())
+                .andExpect(jsonPath("_link.query-events").exists())
+                .andExpect(jsonPath("_link.update-event").exists())
+        ;
     }
 
 
