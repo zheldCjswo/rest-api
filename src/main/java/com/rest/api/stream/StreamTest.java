@@ -1,6 +1,7 @@
 package com.rest.api.stream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,5 +47,30 @@ public class StreamTest {
         //List<TestDto> testDto =
 
 
+        String aa[] = {"a","b","C"};
+        List<String> list4 = Arrays.asList("a","b","c");
+
+        System.out.println("Stream test");
+        List<String> list5 =list4.stream().filter(a -> "a".equals(a)).collect(Collectors.toList());
+        list5.stream().forEach(System.out::println);
+
+        //any match
+        
+        int[] a = {1,2,3,4};
+        boolean resultValue = Arrays.stream(a).anyMatch(bb -> bb > 4);
+
+        System.out.println("resultValue = " + resultValue);
+        
+        resultValue = Arrays.stream(a).allMatch(bb -> bb > 0);
+
+        System.out.println("resultValue = " + resultValue);
+        
+        resultValue = Arrays.stream(a).noneMatch(bb -> bb > 0);
+
+        System.out.println("resultValue = " + resultValue);
+
+        int resultValue2 = Arrays.stream(a).filter(mm -> mm % 2 == 0).max().getAsInt();
+
+        System.out.println("resultValue2 = " + resultValue2);
     }
 }
