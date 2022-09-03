@@ -97,7 +97,7 @@ public class EventControllerTests {
                                 fieldWithPath("limitOfEnrollment").description("limit of enrolmment"),
                                 fieldWithPath("offline").description("it tells if this event is offline event or not")
 
-                                ),
+                        ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION).description("Location header"),
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
@@ -123,7 +123,7 @@ public class EventControllerTests {
                                 fieldWithPath("_links.profile.href").description("link to profile")
 
                         )
-                        ))
+                ))
 
 
         ;
@@ -154,8 +154,8 @@ public class EventControllerTests {
                         .accept(MediaTypes.HAL_JSON)
                         .content(objectMapper.writeValueAsString(event))
                 )
-                        .andDo(print())
-                        .andExpect(status().isBadRequest());
+                .andDo(print())
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -197,7 +197,6 @@ public class EventControllerTests {
                 .andExpect(jsonPath("$[0].code").exists())
         ;
     }
-
 
 
 }
