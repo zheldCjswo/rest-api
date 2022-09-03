@@ -65,17 +65,6 @@ public class EventControllerTests {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
-<<<<<<< HEAD
-                .andExpect(
-                        header().exists(HttpHeaders.LOCATION))
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString()))
-                .andExpect(jsonPath("id").value(Matchers.not(100)))
-                .andExpect(jsonPath("free").value(Matchers.not(true)))
-                .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT))
-                .andExpect(jsonPath("_link.self").exists())
-                .andExpect(jsonPath("_link.query-events").exists())
-                .andExpect(jsonPath("_link.update-event").exists())
-=======
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
                 .andExpect(jsonPath("free").value(false))
@@ -137,7 +126,6 @@ public class EventControllerTests {
                 ))
 
 
->>>>>>> 1720ddcb8c094cd7b6bad779c6b9520abc5bd686
         ;
     }
 
