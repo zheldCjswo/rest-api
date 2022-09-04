@@ -1,0 +1,37 @@
+https://stalker5217.netlify.app/spring/hateoas/
+https://haruhiism.tistory.com/200
+RepresentationModel 설명 참고 정리가 잘되어 있음
+
+//        현재 스프링 부트 공식 페이지 보고 알았네요.
+//        따라하시는 분들, 아마 Resource 임포트 안되실 겁니다.
+//        강의 이후에 공식 클래스 이름이 바뀌었나보네요.
+//        도큐먼트에 다음과 같이 나와있습니다. 참고하세요.
+//        ResourceSupport is now RepresentationModel
+//        Resource is now EntityModel
+//        Resources is now CollectionModel
+//        PagedResources is now PagedModel
+
+//        ControllerLinkBuilder.linkTo
+//
+//        ControllerLinkBuilder.methodOn
+//
+//        사용하실 때 ControllerLinkBuilder -> WebMvcLinkBuilder로 변경되었습니다.
+
+//    }
+
+https://jddng.tistory.com/327
+@EnableJpaAuditing main method 추가 필요
+
+https://unluckyjung.github.io/jpa/2022/05/16/zoneDateTime-audit/
+data-jpa 공식 레포 이슈 에 따르면 srping data jpa에서 사용하는
+@CreatedDate @LasteModifiedDate는 ZoneDateTime 을 지원하지 않습니다.
+
+@PrePersist: 해당 엔티티를 저장하기 전
+@PreUpdate: 해당 엔티티를 업데이트 하기 전
+
++ 추가로
+@PostLoad: 해당 엔티티를 새로 불러오거나 refresh 한 이후
+@PostPersist: 해당 엔티티를 저장한 이후
+@PostUpdate: 해당 엔티티를 업데이트 한 이후
+@PreRemove: 해당 엔티티를 삭제하기 전
+@PostRemove: 해당 엔티티를 삭제한 이후
