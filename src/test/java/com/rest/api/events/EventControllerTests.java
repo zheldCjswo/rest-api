@@ -4,6 +4,7 @@ package com.rest.api.events;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest.api.common.RestDocsConfiguration;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -18,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.stream.IntStream;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
@@ -27,6 +29,11 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -42,6 +49,9 @@ public class EventControllerTests {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    EventRepository eventRepository;
 
     @Test
     public void cretesEvent() throws Exception {
@@ -200,5 +210,30 @@ public class EventControllerTests {
         ;
     }
 
+    @Test
+    @DisplayName("30개의 이벤트 페이지 10개식 조회화기")
+    public void queryEvent() throws Exception {
+        IntStream.range(0,30).forEach(i -> {
+            this.generateEvent(i);
+        });
 
+        this.mockMvc.perform(get("/api/events")
+                        .param("page","1")
+                        .param("size","10")
+                        .param("sort","name,DESC")
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("page").exists())
+                .andExpect(jsonPath("_embedded.eventList[0]._links.self").exists());
+    }
+
+    private void generateEvent(int i) {
+        Event event =  Event.builder()
+                .name("event"+i)
+                .description("test event")
+                .build();
+
+        this.eventRepository.save(event);
+    }
 }
