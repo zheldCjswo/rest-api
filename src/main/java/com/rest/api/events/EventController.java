@@ -12,12 +12,10 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -63,5 +61,18 @@ public class EventController {
         PagedModel<EventResource>  pageModel = assembler.toModel(page, e -> new EventResource(e));
         pageModel.add(new Link("/docs/index.html#resources-events-querys-list").withRel("profile"));
         return ResponseEntity.ok().body(pageModel);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity queryEventOne(@PathVariable("id") Long id) throws IllegalAccessException {
+        Optional<Event> eventOptional =  this.eventRepository.findById(id);
+        if(eventOptional.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        Event event = eventOptional.get();
+        EventResource eventResource = new EventResource(event);
+        eventResource.add(new Link("/docs/index.html#resources-events-querys-get").withRel("profile"));
+        return ResponseEntity.ok(eventResource);
     }
 }
