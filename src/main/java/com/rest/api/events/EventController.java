@@ -1,6 +1,7 @@
 package com.rest.api.events;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
 
@@ -33,13 +35,13 @@ public class EventController {
 
 
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody EventDto eventDto,  Errors errors){
-        if(errors.hasErrors()){
+    public ResponseEntity createEvent(@RequestBody EventDto eventDto, Errors errors) {
+        if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors); //errors를 json으로 변경 불가함
         }
 
         eventValidator.validate(eventDto, errors);
-        if(errors.hasErrors()){
+        if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors);
         }
         Event event = modelMapper.map(eventDto, Event.class);
@@ -56,17 +58,17 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler){
+    public ResponseEntity queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler) {
         Page<Event> page = this.eventRepository.findAll(pageable);
-        PagedModel<EventResource>  pageModel = assembler.toModel(page, e -> new EventResource(e));
+        PagedModel<EventResource> pageModel = assembler.toModel(page, e -> new EventResource(e));
         pageModel.add(new Link("/docs/index.html#resources-events-querys-list").withRel("profile"));
         return ResponseEntity.ok().body(pageModel);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity queryEventOne(@PathVariable("id") Long id) throws IllegalAccessException {
-        Optional<Event> eventOptional =  this.eventRepository.findById(id);
-        if(eventOptional.isEmpty()){
+        Optional<Event> eventOptional = this.eventRepository.findById(id);
+        if (eventOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -74,5 +76,37 @@ public class EventController {
         EventResource eventResource = new EventResource(event);
         eventResource.add(new Link("/docs/index.html#resources-events-querys-get").withRel("profile"));
         return ResponseEntity.ok(eventResource);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity updateEvent(@PathVariable Long id,
+                                      @RequestBody @Valid EventDto eventDto,
+                                      Errors errors){
+        Optional<Event> event  = this.eventRepository.findById(id);
+        if(event.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        if(errors.hasErrors()){
+            return badReqeust(errors);
+        }
+
+        this.eventValidator.validate(eventDto, errors);
+        if(errors.hasErrors()){
+            return badReqeust(errors);
+        }
+        Event existingEvent = event.get();
+        this.modelMapper.map(eventDto, existingEvent);
+        Event savedEvent = this.eventRepository.save(existingEvent);
+
+        EventResource eventResource = new EventResource(savedEvent);
+        eventResource.add(new Link("/docs/index.html#resources-events-querys-get").withRel("profile"));
+        return ResponseEntity.ok(eventResource);
+
+
+    }
+
+    private ResponseEntity badReqeust(Errors errors) {
+        return ResponseEntity.badRequest().body(errors);
     }
 }
